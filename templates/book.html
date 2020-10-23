@@ -1,0 +1,74 @@
+{% extends 'layout2.html' %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block style %}
+    <style>
+        .jumbo {
+            background-color: #e9ecef;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-3 py-3 jumbo rounded">
+        <h3>{{ book.title }}</h3>
+        <div class="d-flex flex-wrap">
+            <h6 class="mr-3"><span class="font-weight-bold">Author: </span>{{ book.author }}</h6>
+            <h6 class="mr-3"><span class="font-weight-bold">Goodreads Rating: </span>{{ rating }} ({{ rating_count}})</h6>
+            <h6 class="mr-3"><span class="font-weight-bold">ISBN: </span>{{ book.isbn }}</h6>
+            <h6 class="mr-auto"><span class="font-weight-bold">Year Published: </span>{{ book.year }}</h6>
+        </div>
+    </div>
+    {% if not isReviewed %}
+        <div class="container mt-3 py-3 pd-3 jumbo rounded">
+            <form action={{ url_for("book", isbn=book.isbn) }} method="POST">
+                <div class="form-group">
+                    <label>Rating</label>
+                    <select class="form-control" name="rating">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Review</label>
+                    <textarea name="review" class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-secondary">Submit</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="container mt-3 py-3 pd-3 jumbo rounded">
+            <h3>Your Review</h3>
+            <hr>
+            <div class="row">
+                <h6 class="col ml-1 text-left">{{ user.username }}</h6>
+                <h6 class="col mr-2 text-right">{{ user_review.rating }}/5</h6>             
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    {{ user_review.review }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="container my-3 py-3 pd-3 jumbo rounded">
+        <h3>Other Reviews</h3>
+        {% for review in reviews %}
+        <hr>
+        <div class="row">
+            <h6 class="col ml-1 text-left">{{ review.username }}</h6>
+            <h6 class="col mr-2 text-right">{{ review.rating }}/5</h6>    
+        </div>
+        <div class="card">
+            <div class="card-body">
+                {{ review.review }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
